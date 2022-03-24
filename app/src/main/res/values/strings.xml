@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Трекер привычек</string>
+    <string name="second_name">Добавить данные</string>
+    <string name="title">Название</string>
+    <string name="desc">Описание</string>
+    <string name="priority">Приоритет</string>
+    <string name="type1">Хорошая привычка</string>
+    <string name="type2">Плохая привычка</string>
+    <string name="type_title">Тип привычки</string>
+    <string name="amount">Количество выполнений</string>
+    <string name="periodicity">Периодичность</string>
+    <string name="save">Сохранить</string>
+    <string name="choose">Изменить цвет</string>
+    <string name="home">Главный экран</string>
+    <string name="info">О приложении</string>
+    <string name="menu_home">Главный экран</string>
+    <string name="menu_info">О приложении</string>
+</resources>
