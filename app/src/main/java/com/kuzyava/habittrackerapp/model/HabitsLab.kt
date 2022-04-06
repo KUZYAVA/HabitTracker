@@ -1,5 +1,6 @@
 package com.kuzyava.habittrackerapp.model
 
+
 object HabitsLab {
-    val habits = mutableListOf<Habit>()
+    val habits: MutableList<Habit> = mutableListOf()
 }

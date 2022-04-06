@@ -29,6 +29,6 @@
 
     <fragment
         android:id="@+id/nav_list"
-        android:name="com.kuzyava.habittrackerapp.ui.home.TrackerListFragment"
+        android:name="com.kuzyava.habittrackerapp.ui.list.ListFragment"
         tools:layout="@layout/fragment_list" />
 </navigation>

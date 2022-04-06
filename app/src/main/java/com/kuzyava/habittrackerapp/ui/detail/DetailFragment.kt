@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
@@ -16,10 +18,20 @@ import com.jaredrummler.android.colorpicker.ColorShape
 import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.databinding.FragmentDetailBinding
 import com.kuzyava.habittrackerapp.model.Habit
-import com.kuzyava.habittrackerapp.model.HabitsLab
 
 class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
+    private lateinit var viewModel: DetailViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val position = arguments?.getInt(POSITION_KEY) ?: -1
+                return DetailViewModel(position) as T
+            }
+        })[DetailViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,13 +40,12 @@ class DetailFragment : Fragment() {
     ): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
 
-        val position = arguments?.getInt(POSITION_KEY) ?: -1
-        if (position != -1) {
-            val habit = HabitsLab.habits[position]
+        binding.btnColor.tag = -1
+        viewModel.detailHabit.observe(viewLifecycleOwner) { habit ->
             binding.tfTitle.editText?.setText(habit.title)
             binding.tfDesc.editText?.setText(habit.description)
             binding.tfPriority.editText?.setText(habit.priority)
-            if (habit.type == 0) {
+            if (habit.type) {
                 binding.radioButton1.isChecked = true
             } else {
                 binding.radioButton2.isChecked = true
@@ -43,8 +54,6 @@ class DetailFragment : Fragment() {
             binding.tfPeriodicity.editText?.setText(habit.periodicity)
             if (habit.color != -1) binding.btnColor.setBackgroundColor(habit.color)
             binding.btnColor.tag = habit.color
-        } else {
-            binding.btnColor.tag = -1
         }
 
         val items = listOf("Высокий", "Средний", "Низкий")
@@ -55,14 +64,11 @@ class DetailFragment : Fragment() {
         )
         (binding.tfPriority.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
-        val habits = HabitsLab.habits
         binding.btnSave.setOnClickListener {
-            if (TextUtils.isEmpty(binding.tfTitle.editText?.text.toString()) or TextUtils.isEmpty(
-                    binding.tfDesc.editText?.text.toString()
-                )
+            if (TextUtils.isEmpty(binding.tfTitle.editText?.text.toString())
                 or TextUtils.isEmpty(binding.tfAmount.editText?.text.toString()) or TextUtils.isEmpty(
                     binding.tfPeriodicity.editText?.text.toString()
-                ) or TextUtils.isEmpty(binding.tfPriority.editText?.text.toString())
+                )
             ) {
                 Toast.makeText(context, "Заполните все данные", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -71,16 +77,14 @@ class DetailFragment : Fragment() {
                 title = binding.tfTitle.editText?.text.toString(),
                 description = binding.tfDesc.editText?.text.toString(),
                 priority = binding.tfPriority.editText?.text.toString(),
-                type = if (binding.rgType.checkedRadioButtonId == R.id.radioButton1) 0 else 1,
+                type = binding.rgType.checkedRadioButtonId == R.id.radioButton1,
                 amount = binding.tfAmount.editText?.text.toString(),
                 periodicity = binding.tfPeriodicity.editText?.text.toString(),
                 color = binding.btnColor.tag as Int
             )
-            if (position != -1) {
-                habits[position] = habit
-            } else {
-                habits.add(habit)
-            }
+
+            viewModel.addHabit(habit)
+
             Toast.makeText(context, "Данные сохранены", Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }

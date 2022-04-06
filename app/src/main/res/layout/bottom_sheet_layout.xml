@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="48dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/titleBottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:background="@color/primary"
+        android:gravity="center"
+        android:text="Фильтры и сортировки"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tfSearch"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleBottom">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/rgSort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:checkedButton="@+id/radioButton1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfSearch">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Тип сортировки" />
+
+        <RadioButton
+            android:id="@+id/sortDefault"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Без сортировки" />
+
+        <RadioButton
+            android:id="@+id/sortAmount1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Сначала с наименьшим количеством выполнений" />
+
+        <RadioButton
+            android:id="@+id/sortAmount2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Сначала с наибольшим количеством выполнений" />
+
+        <RadioButton
+            android:id="@+id/sortPeriod1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Сначала с наименьшей периодичностью" />
+
+        <RadioButton
+            android:id="@+id/sortPeriod2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Сначала с наибольшей периодичностью" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>
