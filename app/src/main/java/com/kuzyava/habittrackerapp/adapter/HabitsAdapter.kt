@@ -4,14 +4,16 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.kuzyava.habittrackerapp.model.Habit
 import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.databinding.ItemHabitBinding
+import com.kuzyava.habittrackerapp.db.Habit
 
 class HabitsAdapter(val clickListener: (Habit) -> Unit) :
     RecyclerView.Adapter<HabitsAdapter.HabitsViewHolder>() {
-    private lateinit var habits: List<Habit>
+    private var habits: List<Habit> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -27,7 +29,7 @@ class HabitsAdapter(val clickListener: (Habit) -> Unit) :
     override fun getItemCount() = habits.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setHabits(habits: List<Habit>) {
+    fun submitList(habits: List<Habit>) {
         this.habits = habits
         notifyDataSetChanged()
     }
@@ -43,7 +45,7 @@ class HabitsAdapter(val clickListener: (Habit) -> Unit) :
             binding.tvType.text = "Тип: ${if (habit.type) "Хорошая" else "Плохая"} привычка"
             binding.tvAmount.text = "Количество выполнений: ${habit.amount}"
             binding.tvPeriodicity.text = "Периодичность в неделю: ${habit.periodicity}"
-            if (habit.color != -1) binding.btnColor2.setColorFilter(habit.color)
+            binding.btnColor2.setColorFilter(habit.color)
         }
     }
 }

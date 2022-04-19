@@ -1,30 +1,23 @@
 package com.kuzyava.habittrackerapp.ui.detail
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.kuzyava.habittrackerapp.model.Habit
-import com.kuzyava.habittrackerapp.model.HabitsLab
+import com.kuzyava.habittrackerapp.db.Habit
+import com.kuzyava.habittrackerapp.db.HabitRepository
 
-class DetailViewModel(private val position: Int) : ViewModel() {
-    private val mutableDetailHabit: MutableLiveData<Habit> = MutableLiveData()
-    val detailHabit: LiveData<Habit> = mutableDetailHabit
+class DetailViewModel(private val repository: HabitRepository, private val id: Int) :
+    ViewModel() {
+    private val mutableHabitId = MutableLiveData<Int>()
+    val habit = Transformations.switchMap(mutableHabitId) {
+        repository.findById(it)
+    }
 
     init {
-        load()
+        if (id != -1) mutableHabitId.value = id
     }
 
-    private fun load() {
-        if (position != -1) {
-            mutableDetailHabit.value = HabitsLab.habits[position]
-        }
-    }
-
-    fun addHabit(habit: Habit) {
-        if (position != -1) {
-            HabitsLab.habits[position] = habit
-        } else {
-            HabitsLab.habits.add(habit)
-        }
-    }
+    fun addHabit(habit: Habit) =
+        if (id != -1) repository.update(habit)
+        else repository.insert(habit)
 }

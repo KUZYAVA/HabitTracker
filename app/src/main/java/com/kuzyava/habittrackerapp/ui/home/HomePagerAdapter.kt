@@ -13,7 +13,7 @@ class HomePagerAdapter(fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
     override fun getCount() = 2
 
-    override fun getItem(position: Int) = ListFragment.newInstance(position==0)
+    override fun getItem(position: Int) = ListFragment.newInstance(position == 0)
 
     override fun getPageTitle(position: Int) = TAB_TITLES[position]
 }

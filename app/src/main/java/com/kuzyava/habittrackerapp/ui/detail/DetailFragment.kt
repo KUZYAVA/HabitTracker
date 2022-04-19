@@ -1,5 +1,6 @@
 package com.kuzyava.habittrackerapp.ui.detail
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -15,9 +16,10 @@ import androidx.navigation.fragment.findNavController
 import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import com.jaredrummler.android.colorpicker.ColorShape
+import com.kuzyava.habittrackerapp.HabitsApplication
 import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.databinding.FragmentDetailBinding
-import com.kuzyava.habittrackerapp.model.Habit
+import com.kuzyava.habittrackerapp.db.Habit
 
 class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
@@ -27,8 +29,12 @@ class DetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val position = arguments?.getInt(POSITION_KEY) ?: -1
-                return DetailViewModel(position) as T
+                val id = arguments?.getInt(ID_KEY) ?: -1
+                @Suppress("UNCHECKED_CAST")
+                return DetailViewModel(
+                    (activity?.application as HabitsApplication).repository,
+                    id
+                ) as T
             }
         })[DetailViewModel::class.java]
     }
@@ -40,8 +46,8 @@ class DetailFragment : Fragment() {
     ): View {
         binding = FragmentDetailBinding.inflate(inflater, container, false)
 
-        binding.btnColor.tag = -1
-        viewModel.detailHabit.observe(viewLifecycleOwner) { habit ->
+        binding.btnColor.tag = Color.BLACK
+        viewModel.habit.observe(viewLifecycleOwner) { habit ->
             binding.tfTitle.editText?.setText(habit.title)
             binding.tfDesc.editText?.setText(habit.description)
             binding.tfPriority.editText?.setText(habit.priority)
@@ -50,9 +56,9 @@ class DetailFragment : Fragment() {
             } else {
                 binding.radioButton2.isChecked = true
             }
-            binding.tfAmount.editText?.setText(habit.amount)
-            binding.tfPeriodicity.editText?.setText(habit.periodicity)
-            if (habit.color != -1) binding.btnColor.setBackgroundColor(habit.color)
+            binding.tfAmount.editText?.setText(habit.amount.toString())
+            binding.tfPeriodicity.editText?.setText(habit.periodicity.toString())
+            binding.btnColor.setBackgroundColor(habit.color)
             binding.btnColor.tag = habit.color
         }
 
@@ -78,8 +84,8 @@ class DetailFragment : Fragment() {
                 description = binding.tfDesc.editText?.text.toString(),
                 priority = binding.tfPriority.editText?.text.toString(),
                 type = binding.rgType.checkedRadioButtonId == R.id.radioButton1,
-                amount = binding.tfAmount.editText?.text.toString(),
-                periodicity = binding.tfPeriodicity.editText?.text.toString(),
+                amount = binding.tfAmount.editText?.text.toString().toInt(),
+                periodicity = binding.tfPeriodicity.editText?.text.toString().toInt(),
                 color = binding.btnColor.tag as Int
             )
 
@@ -111,6 +117,6 @@ class DetailFragment : Fragment() {
     }
 
     companion object {
-        const val POSITION_KEY = "position"
+        const val ID_KEY = "id"
     }
 }

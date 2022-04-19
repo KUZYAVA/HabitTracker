@@ -1,13 +1,11 @@
 package com.kuzyava.habittrackerapp.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -17,7 +15,10 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputEditText
+import com.kuzyava.habittrackerapp.HabitsApplication
 import com.kuzyava.habittrackerapp.R
+import com.kuzyava.habittrackerapp.db.FilterType
+import com.kuzyava.habittrackerapp.db.SortType
 import com.kuzyava.habittrackerapp.ui.list.ListViewModel
 
 class HomeFragment : Fragment() {
@@ -27,7 +28,8 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ListViewModel() as T
+                @Suppress("UNCHECKED_CAST")
+                return ListViewModel((activity?.application as HabitsApplication).repository) as T
             }
         })[ListViewModel::class.java]
     }
@@ -58,8 +60,8 @@ class HomeFragment : Fragment() {
                 if (radioGroup.checkedRadioButtonId != R.id.sortDefault) {
                     radioGroup.check(R.id.sortDefault)
                 }
-                viewModel.filterByTitle(text)
-            } else viewModel.load()
+                viewModel.getHabits(FilterType(text))
+            } else viewModel.getHabits(SortType.SortDefault)
         }
 
         radioGroup.check(R.id.sortDefault)
@@ -69,11 +71,11 @@ class HomeFragment : Fragment() {
                 editSearch.setText("")
             }
             when (id) {
-                R.id.sortDefault -> viewModel.load()
-                R.id.sortAmount1 -> viewModel.sortByAmount(true)
-                R.id.sortAmount2 -> viewModel.sortByAmount(false)
-                R.id.sortPeriod1 -> viewModel.sortByPeriod(true)
-                R.id.sortPeriod2 -> viewModel.sortByPeriod(false)
+                R.id.sortDefault -> viewModel.getHabits(SortType.SortDefault)
+                R.id.sortAmount1 -> viewModel.getHabits(SortType.SortByAmount)
+                R.id.sortAmount2 -> viewModel.getHabits(SortType.SortByAmountDesc)
+                R.id.sortPeriod1 -> viewModel.getHabits(SortType.SortByPeriod)
+                R.id.sortPeriod2 -> viewModel.getHabits(SortType.SortByPeriodDesc)
             }
         }
         return view
