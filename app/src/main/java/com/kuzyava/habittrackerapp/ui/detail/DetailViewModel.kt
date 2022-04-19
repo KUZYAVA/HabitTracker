@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.kuzyava.habittrackerapp.db.Habit
 import com.kuzyava.habittrackerapp.db.HabitRepository
 
-class DetailViewModel(private val repository: HabitRepository, private val id: Int) :
+class DetailViewModel(private val repository: HabitRepository, private val habitId: Int) :
     ViewModel() {
     private val mutableHabitId = MutableLiveData<Int>()
     val habit = Transformations.switchMap(mutableHabitId) {
@@ -14,10 +14,10 @@ class DetailViewModel(private val repository: HabitRepository, private val id: I
     }
 
     init {
-        if (id != -1) mutableHabitId.value = id
+        if (habitId != HABIT_ID_ADD_NEW) mutableHabitId.value = habitId
     }
 
     fun addHabit(habit: Habit) =
-        if (id != -1) repository.update(habit)
+        if (habitId != HABIT_ID_ADD_NEW) repository.update(habit)
         else repository.insert(habit)
 }

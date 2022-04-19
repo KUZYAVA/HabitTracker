@@ -11,7 +11,7 @@ interface HabitDao {
     @Query("SELECT * FROM habit_table WHERE id=:id ")
     fun findById(id: Int): LiveData<Habit>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(habit: Habit)
 
     @Update
