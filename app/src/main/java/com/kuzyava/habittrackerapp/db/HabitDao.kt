@@ -12,10 +12,10 @@ interface HabitDao {
     fun findById(id: Int): LiveData<Habit>
 
     @Insert
-    fun insert(habit: Habit)
+    suspend fun insert(habit: Habit)
 
     @Update
-    fun update(habit: Habit)
+    suspend fun update(habit: Habit)
 
     @Query("SELECT * FROM habit_table ORDER BY amount ASC")
     fun getHabitsSortByAmount(): LiveData<List<Habit>>

@@ -3,8 +3,10 @@ package com.kuzyava.habittrackerapp.ui.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kuzyava.habittrackerapp.db.Habit
 import com.kuzyava.habittrackerapp.db.HabitRepository
+import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: HabitRepository, private val habitId: Int) :
     ViewModel() {
@@ -17,7 +19,9 @@ class DetailViewModel(private val repository: HabitRepository, private val habit
         if (habitId != HABIT_ID_ADD_NEW) mutableHabitId.value = habitId
     }
 
-    fun addHabit(habit: Habit) =
+    fun addHabit(habit: Habit) = viewModelScope.launch {
         if (habitId != HABIT_ID_ADD_NEW) repository.update(habit)
         else repository.insert(habit)
+    }
+
 }

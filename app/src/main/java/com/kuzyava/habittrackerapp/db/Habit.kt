@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "habit_table")
 class Habit(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    var title: String,
-    var description: String,
-    var priority: String,
-    var type: Boolean,
-    var amount: Int,
-    var periodicity: Int,
-    var color: Int = Color.BLACK
+    val title: String,
+    val description: String,
+    val priority: String,
+    val type: Boolean,
+    val amount: Int,
+    val periodicity: Int,
+    val color: Int = Color.BLACK
 )

@@ -19,7 +19,7 @@ class HabitRepository(private val habitDao: HabitDao) {
 
     fun findById(id: Int) = habitDao.findById(id)
 
-    fun insert(habit: Habit) = habitDao.insert(habit)
+    suspend fun insert(habit: Habit) = habitDao.insert(habit)
 
-    fun update(habit: Habit) = habitDao.update(habit)
+    suspend fun update(habit: Habit) = habitDao.update(habit)
 }
