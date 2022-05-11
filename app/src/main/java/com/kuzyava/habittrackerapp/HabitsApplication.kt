@@ -1,8 +1,8 @@
 package com.kuzyava.habittrackerapp
 
 import android.app.Application
-import com.kuzyava.habittrackerapp.db.HabitRepository
-import com.kuzyava.habittrackerapp.db.HabitRoomDatabase
+import com.kuzyava.habittrackerapp.data.HabitRepository
+import com.kuzyava.habittrackerapp.data.db.HabitRoomDatabase
 
 class HabitsApplication : Application() {
     private val database by lazy { HabitRoomDatabase.getDatabase(this) }

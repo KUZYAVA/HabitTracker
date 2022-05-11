@@ -3,14 +3,15 @@ package com.kuzyava.habittrackerapp.ui.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.kuzyava.habittrackerapp.db.Habit
-import com.kuzyava.habittrackerapp.db.HabitRepository
+import com.kuzyava.habittrackerapp.data.model.Habit
+import com.kuzyava.habittrackerapp.data.HabitRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DetailViewModel(private val repository: HabitRepository, private val habitId: Int) :
+class DetailViewModel(private val repository: HabitRepository, private val habitId: String) :
     ViewModel() {
-    private val mutableHabitId = MutableLiveData<Int>()
+    private val mutableHabitId = MutableLiveData<String>()
     val habit = Transformations.switchMap(mutableHabitId) {
         repository.findById(it)
     }
@@ -19,9 +20,12 @@ class DetailViewModel(private val repository: HabitRepository, private val habit
         if (habitId != HABIT_ID_ADD_NEW) mutableHabitId.value = habitId
     }
 
-    fun addHabit(habit: Habit) = viewModelScope.launch {
-        if (habitId != HABIT_ID_ADD_NEW) repository.update(habit)
-        else repository.insert(habit)
+    fun addHabit(habit: Habit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            if (habitId != HABIT_ID_ADD_NEW)
+                repository.update(habit)
+            else
+                repository.add(habit)
+        }
     }
-
 }

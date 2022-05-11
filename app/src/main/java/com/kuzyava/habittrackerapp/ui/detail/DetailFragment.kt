@@ -18,10 +18,12 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import com.jaredrummler.android.colorpicker.ColorShape
 import com.kuzyava.habittrackerapp.HabitsApplication
 import com.kuzyava.habittrackerapp.R
+import com.kuzyava.habittrackerapp.data.model.Habit
 import com.kuzyava.habittrackerapp.databinding.FragmentDetailBinding
-import com.kuzyava.habittrackerapp.db.Habit
+import java.util.*
 
-const val HABIT_ID_ADD_NEW = -1
+const val HABIT_ID_ADD_NEW = ""
+val priorityList = listOf("Высокий", "Средний", "Низкий")
 
 class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
@@ -31,7 +33,7 @@ class DetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                habitId = arguments?.getInt(ID_KEY) ?: HABIT_ID_ADD_NEW
+                habitId = arguments?.getString(ID_KEY) ?: HABIT_ID_ADD_NEW
                 @Suppress("UNCHECKED_CAST")
                 return DetailViewModel(
                     (activity?.application as HabitsApplication).repository,
@@ -39,6 +41,7 @@ class DetailFragment : Fragment() {
                 ) as T
             }
         })[DetailViewModel::class.java]
+
     }
 
     override fun onCreateView(
@@ -52,8 +55,8 @@ class DetailFragment : Fragment() {
         viewModel.habit.observe(viewLifecycleOwner) { habit ->
             binding.tfTitle.editText?.setText(habit.title)
             binding.tfDesc.editText?.setText(habit.description)
-            binding.tfPriority.editText?.setText(habit.priority)
-            if (habit.type) {
+            binding.tfPriority.editText?.setText(priorityList[habit.priority])
+            if (habit.type == 0) {
                 binding.radioButton1.isChecked = true
             } else {
                 binding.radioButton2.isChecked = true
@@ -64,35 +67,35 @@ class DetailFragment : Fragment() {
             binding.btnColor.tag = habit.color
         }
 
-        val items = listOf("Высокий", "Средний", "Низкий")
         val adapter = ArrayAdapter(
             requireContext(),
             com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
-            items
+            priorityList
         )
         (binding.tfPriority.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
         binding.btnSave.setOnClickListener {
             if (TextUtils.isEmpty(binding.tfTitle.editText?.text.toString())
-                or TextUtils.isEmpty(binding.tfAmount.editText?.text.toString()) or TextUtils.isEmpty(
-                    binding.tfPeriodicity.editText?.text.toString()
-                )
+                or TextUtils.isEmpty(binding.tfDesc.editText?.text.toString())
+                or TextUtils.isEmpty(binding.tfAmount.editText?.text.toString())
+                or TextUtils.isEmpty(binding.tfPeriodicity.editText?.text.toString())
+                or TextUtils.isEmpty(binding.tfPriority.editText?.text.toString())
             ) {
                 Toast.makeText(context, "Заполните все данные", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            viewModel.addHabit(
-                Habit(
-                    id = if (habitId != HABIT_ID_ADD_NEW) habitId else 0,
-                    title = binding.tfTitle.editText?.text.toString(),
-                    description = binding.tfDesc.editText?.text.toString(),
-                    priority = binding.tfPriority.editText?.text.toString(),
-                    type = binding.rgType.checkedRadioButtonId == R.id.radioButton1,
-                    amount = binding.tfAmount.editText?.text.toString().toInt(),
-                    periodicity = binding.tfPeriodicity.editText?.text.toString().toInt(),
-                    color = binding.btnColor.tag as Int
-                )
+            val habit = Habit(
+                uid = if (habitId != HABIT_ID_ADD_NEW) habitId else "",
+                title = binding.tfTitle.editText?.text.toString(),
+                description = binding.tfDesc.editText?.text.toString(),
+                priority = priorityList.indexOf(binding.tfPriority.editText?.text.toString()),
+                type = if (binding.rgType.checkedRadioButtonId == R.id.radioButton1) 0 else 1,
+                amount = binding.tfAmount.editText?.text.toString().toInt(),
+                periodicity = binding.tfPeriodicity.editText?.text.toString().toInt(),
+                color = binding.btnColor.tag as Int,
+                date = (Date().time / 1000).toInt()
             )
+            viewModel.addHabit(habit)
             Toast.makeText(context, "Данные сохранены", Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }

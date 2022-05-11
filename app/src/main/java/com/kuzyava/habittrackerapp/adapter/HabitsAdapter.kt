@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.databinding.ItemHabitBinding
-import com.kuzyava.habittrackerapp.db.Habit
+import com.kuzyava.habittrackerapp.data.model.Habit
+import com.kuzyava.habittrackerapp.ui.detail.priorityList
 
 class HabitsAdapter(val clickListener: (Habit) -> Unit) :
     RecyclerView.Adapter<HabitsAdapter.HabitsViewHolder>() {
@@ -42,7 +41,8 @@ class HabitsAdapter(val clickListener: (Habit) -> Unit) :
             binding.tvTitle.text = habit.title
             binding.tvDesc.text = "Описание: ${habit.description}"
             binding.tvPriority.text = "Приоритет: ${habit.priority}"
-            binding.tvType.text = "Тип: ${if (habit.type) "Хорошая" else "Плохая"} привычка"
+            binding.tvPriority.text = "Приоритет: ${priorityList[habit.priority]}"
+            binding.tvType.text = "Тип: ${if (habit.type == 0) "Хорошая" else "Плохая"} привычка"
             binding.tvAmount.text = "Количество выполнений: ${habit.amount}"
             binding.tvPeriodicity.text = "Периодичность в неделю: ${habit.periodicity}"
             binding.btnColor2.setColorFilter(habit.color)

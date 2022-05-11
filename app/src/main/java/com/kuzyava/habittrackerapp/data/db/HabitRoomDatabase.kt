@@ -1,9 +1,10 @@
-package com.kuzyava.habittrackerapp.db
+package com.kuzyava.habittrackerapp.data.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kuzyava.habittrackerapp.data.model.Habit
 
 @Database(entities = [Habit::class], version = 1, exportSchema = false)
 abstract class HabitRoomDatabase : RoomDatabase() {

@@ -17,8 +17,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.kuzyava.habittrackerapp.HabitsApplication
 import com.kuzyava.habittrackerapp.R
-import com.kuzyava.habittrackerapp.db.FilterType
-import com.kuzyava.habittrackerapp.db.SortType
+import com.kuzyava.habittrackerapp.data.FilterType
+import com.kuzyava.habittrackerapp.data.SortType
 import com.kuzyava.habittrackerapp.ui.list.ListViewModel
 
 class HomeFragment : Fragment() {

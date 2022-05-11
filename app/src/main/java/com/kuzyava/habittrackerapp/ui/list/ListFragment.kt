@@ -48,12 +48,12 @@ class ListFragment : Fragment() {
         binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
         val adapter = HabitsAdapter {
-            val id = it.id
+            val id = it.uid
             val bundle = bundleOf(DetailFragment.ID_KEY to id)
             findNavController().navigate(R.id.action_to_detail, bundle)
         }
 
-        val section = arguments?.getBoolean(SECTION) ?: true
+        val section = arguments?.getInt(SECTION) ?: 0
         viewModel.habits.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list.filter { it.type == section })
         }
@@ -65,13 +65,12 @@ class ListFragment : Fragment() {
     companion object {
         private const val SECTION = "section"
 
-        fun newInstance(section: Boolean): ListFragment {
+        fun newInstance(section: Int): ListFragment {
             return ListFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(SECTION, section)
+                    putInt(SECTION, section)
                 }
             }
         }
     }
-
 }
