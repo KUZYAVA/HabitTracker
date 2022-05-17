@@ -10,7 +10,7 @@ import com.kuzyava.habittrackerapp.databinding.ItemHabitBinding
 import com.kuzyava.habittrackerapp.data.model.Habit
 import com.kuzyava.habittrackerapp.ui.detail.priorityList
 
-class HabitsAdapter(val clickListener: (Habit) -> Unit) :
+class HabitsAdapter(val clickListener: (Habit) -> Unit, val tickListener: (Habit) -> Unit) :
     RecyclerView.Adapter<HabitsAdapter.HabitsViewHolder>() {
     private var habits: List<Habit> = listOf()
 
@@ -46,6 +46,7 @@ class HabitsAdapter(val clickListener: (Habit) -> Unit) :
             binding.tvAmount.text = "Количество выполнений: ${habit.amount}"
             binding.tvPeriodicity.text = "Периодичность в неделю: ${habit.periodicity}"
             binding.btnColor2.setColorFilter(habit.color)
+            binding.btnTick.setOnClickListener { tickListener(habit) }
         }
     }
 }

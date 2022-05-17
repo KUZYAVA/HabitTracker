@@ -1,23 +1,41 @@
 package com.kuzyava.habittrackerapp.ui.list
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import com.kuzyava.habittrackerapp.data.HabitRepository
+import android.util.Log
+import androidx.lifecycle.*
 import com.kuzyava.habittrackerapp.data.IType
+import com.kuzyava.habittrackerapp.data.LoadHabitsInteractor
 import com.kuzyava.habittrackerapp.data.Refresh
+import com.kuzyava.habittrackerapp.data.model.Habit
+import com.kuzyava.habittrackerapp.di.ListScope
+import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class ListViewModel(private val repository: HabitRepository) : ViewModel() {
+@ListScope
+class ListViewModel @Inject constructor(private val loadHabitsInteractor: LoadHabitsInteractor) :
+    ViewModel() {
     private val mutableSortType = MutableLiveData<IType>()
     val habits = Transformations.switchMap(mutableSortType) {
-        repository.getHabits(it)
+        loadHabitsInteractor.getHabits(it).asLiveData()
     }
+    val toast = MutableLiveData<String>()
 
     fun getHabits(type: IType) {
         mutableSortType.value = type
     }
 
     init {
+        Log.d("ListViewModel", "init vm ListViewModel")
         getHabits(Refresh)
+    }
+
+    fun executeHabit(habit: Habit) {
+        viewModelScope.launch {
+            toast.value = loadHabitsInteractor.executeHabit(habit)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ListViewModel", "clear vm ListViewModel ")
     }
 }

@@ -1,5 +1,6 @@
 package com.kuzyava.habittrackerapp.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,30 +9,24 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.textfield.TextInputEditText
-import com.kuzyava.habittrackerapp.HabitsApplication
+import com.kuzyava.habittrackerapp.MainActivity
 import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.data.FilterType
 import com.kuzyava.habittrackerapp.data.SortType
 import com.kuzyava.habittrackerapp.ui.list.ListViewModel
+import javax.inject.Inject
 
 class HomeFragment : Fragment() {
-
-    private lateinit var viewModel: ListViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return ListViewModel((activity?.application as HabitsApplication).repository) as T
-            }
-        })[ListViewModel::class.java]
+    @Inject
+    lateinit var viewModel: ListViewModel
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainActivity).listComponent.inject(this)
     }
 
     override fun onCreateView(
@@ -50,8 +45,6 @@ class HomeFragment : Fragment() {
         view.findViewById<TabLayout>(R.id.tab_layout).setupWithViewPager(viewPager)
         view.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             findNavController().navigate(R.id.action_to_detail)
-            radioGroup.check(R.id.sortDefault)
-            editSearch.setText("")
         }
 
         editSearch.addTextChangedListener {

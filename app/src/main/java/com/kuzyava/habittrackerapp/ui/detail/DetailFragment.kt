@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.jaredrummler.android.colorpicker.ColorPickerDialog
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
@@ -21,27 +19,22 @@ import com.kuzyava.habittrackerapp.R
 import com.kuzyava.habittrackerapp.data.model.Habit
 import com.kuzyava.habittrackerapp.databinding.FragmentDetailBinding
 import java.util.*
+import javax.inject.Inject
 
 const val HABIT_ID_ADD_NEW = ""
 val priorityList = listOf("Высокий", "Средний", "Низкий")
 
 class DetailFragment : Fragment() {
     private lateinit var binding: FragmentDetailBinding
-    private lateinit var viewModel: DetailViewModel
     private var habitId = HABIT_ID_ADD_NEW
+
+    @Inject
+    lateinit var viewModel: DetailViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                habitId = arguments?.getString(ID_KEY) ?: HABIT_ID_ADD_NEW
-                @Suppress("UNCHECKED_CAST")
-                return DetailViewModel(
-                    (activity?.application as HabitsApplication).repository,
-                    habitId
-                ) as T
-            }
-        })[DetailViewModel::class.java]
-
+        habitId = arguments?.getString(ID_KEY) ?: HABIT_ID_ADD_NEW
+        (activity?.application as HabitsApplication).applicationComponent.detailComponent()
+            .create(habitId).inject(this)
     }
 
     override fun onCreateView(

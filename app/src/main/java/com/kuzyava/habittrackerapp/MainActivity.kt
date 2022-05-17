@@ -12,14 +12,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.kuzyava.habittrackerapp.databinding.ActivityMainBinding
 import com.kuzyava.habittrackerapp.databinding.NavHeaderMainBinding
+import com.kuzyava.habittrackerapp.di.ListComponent
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    lateinit var listComponent: ListComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        listComponent =
+            (application as HabitsApplication).applicationComponent.listComponent().create()
+        listComponent.inject(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

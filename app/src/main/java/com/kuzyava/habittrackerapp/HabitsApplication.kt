@@ -1,10 +1,17 @@
 package com.kuzyava.habittrackerapp
 
 import android.app.Application
-import com.kuzyava.habittrackerapp.data.HabitRepository
-import com.kuzyava.habittrackerapp.data.db.HabitRoomDatabase
+import com.kuzyava.habittrackerapp.di.ApplicationComponent
+import com.kuzyava.habittrackerapp.di.DaggerApplicationComponent
 
 class HabitsApplication : Application() {
-    private val database by lazy { HabitRoomDatabase.getDatabase(this) }
-    val repository by lazy { HabitRepository(database.habitDao()) }
+    lateinit var applicationComponent: ApplicationComponent
+        private set
+
+    override fun onCreate() {
+        super.onCreate()
+        applicationComponent =
+            DaggerApplicationComponent
+                .factory().create(this)
+    }
 }

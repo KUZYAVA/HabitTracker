@@ -13,8 +13,8 @@ data class Habit(
     @Json(name = "description") val description: String,
     @Json(name = "priority") val priority: Int,
     @Json(name = "type") val type: Int,
-    @Json(name = "count") val amount: Int,
+    @Json(name = "count") var amount: Int,
     @Json(name = "frequency") val periodicity: Int,
     @Json(name = "color") val color: Int = Color.BLACK,
-    @Json(name = "date") val date: Int,
+    @Json(name = "date") var date: Int
 )
