@@ -1,4 +1,4 @@
-package com.kuzyava.habittrackerapp.di
+package com.kuzyava.habittrackerapp.data.di
 
 import android.content.Context
 import androidx.room.Room
@@ -7,24 +7,16 @@ import com.kuzyava.habittrackerapp.data.db.HabitDao
 import com.kuzyava.habittrackerapp.data.db.HabitRoomDatabase
 import com.kuzyava.habittrackerapp.data.remote.HabitApiService
 import com.kuzyava.habittrackerapp.domain.HabitRepository
-import com.kuzyava.habittrackerapp.domain.LoadHabitsInteractor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
-class HabitsModule {
-    @Singleton
-    @Provides
-    fun provideLoadHabitsInteractor(repository: HabitRepository): LoadHabitsInteractor {
-        return LoadHabitsInteractor(repository, Dispatchers.IO)
-    }
-
+class DataLayerModule {
     @Singleton
     @Provides
     fun provideRepository(habitDao: HabitDao, retrofitService: HabitApiService): HabitRepository {
