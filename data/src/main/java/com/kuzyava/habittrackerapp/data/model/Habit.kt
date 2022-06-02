@@ -7,7 +7,7 @@ import com.kuzyava.habittrackerapp.domain.HabitModel
 import com.squareup.moshi.Json
 
 @Entity(tableName = "habit_table")
-class Habit(
+data class Habit(
     @PrimaryKey(autoGenerate = false)
     @Json(name = "uid") var uid: String,
     @Json(name = "title") val title: String,

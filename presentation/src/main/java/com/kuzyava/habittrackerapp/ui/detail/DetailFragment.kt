@@ -66,7 +66,7 @@ class DetailFragment : Fragment() {
             binding.btnColor.tag = habit.color
         }
 
-        viewModel.toast.observe(viewLifecycleOwner){
+        viewModel.toast.observe(viewLifecycleOwner) {
             if (it != "") {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 viewModel.toast.value = ""
@@ -86,16 +86,25 @@ class DetailFragment : Fragment() {
                 or TextUtils.isEmpty(binding.tfDesc.editText?.text.toString())
                 or TextUtils.isEmpty(binding.tfAmount.editText?.text.toString())
                 or TextUtils.isEmpty(binding.tfPeriodicity.editText?.text.toString())
-                or TextUtils.isEmpty(binding.tfPriority.editText?.text.toString())
+            //or TextUtils.isEmpty(binding.tfPriority.editText?.text.toString())
             ) {
-                Toast.makeText(context, "Заполните все данные", Toast.LENGTH_SHORT).show()
+                binding.errorMessage.apply {
+                    text = getString(R.string.errorMessage)
+                    visibility = View.VISIBLE
+                }
+                //Toast.makeText(context, getString(R.string.errorMessage), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            binding.errorMessage.apply {
+                text = getString(R.string.goodMessage)
+                visibility = View.VISIBLE
+            }
+            val priority = priorityList.indexOf(binding.tfPriority.editText?.text.toString())
             val habit = HabitModel(
                 uid = if (habitId != HABIT_ID_ADD_NEW) habitId else "",
                 title = binding.tfTitle.editText?.text.toString(),
                 description = binding.tfDesc.editText?.text.toString(),
-                priority = priorityList.indexOf(binding.tfPriority.editText?.text.toString()),
+                priority = if (priority == -1) 0 else priority,
                 type = if (binding.rgType.checkedRadioButtonId == R.id.radioButton1) 0 else 1,
                 amount = binding.tfAmount.editText?.text.toString().toInt(),
                 periodicity = binding.tfPeriodicity.editText?.text.toString().toInt(),
@@ -103,8 +112,6 @@ class DetailFragment : Fragment() {
                 date = (Date().time / 1000).toInt()
             )
             viewModel.addHabit(habit)
-//            Toast.makeText(context, "Данные сохранены", Toast.LENGTH_SHORT).show()
-//            findNavController().popBackStack()
         }
 
         binding.btnColor.setOnClickListener {

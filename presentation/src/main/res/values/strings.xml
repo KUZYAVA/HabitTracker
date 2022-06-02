@@ -17,4 +17,6 @@
     <string name="menu_info">О приложении</string>
     <string name="information">Лучшее приложение в мире</string>
     <string name="search">Поиск</string>
+    <string name="errorMessage">Заполните все данные</string>
+    <string name="goodMessage">Все хорошо</string>
 </resources>
